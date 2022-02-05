@@ -15,6 +15,8 @@ class MLP(nn.Module):
         self.layer_hidden = nn.Linear(dim_hidden, dim_out)
         self.softmax = nn.Softmax(dim=1)
 
+
+
     def forward(self, x):
         x = x.view(-1, x.shape[1]*x.shape[-2]*x.shape[-1])
         x = self.layer_input(x)
@@ -23,6 +25,14 @@ class MLP(nn.Module):
         x = self.layer_hidden(x)
         return self.softmax(x)
 
+class LogisticRegression(nn.Module):
+    def __init__(self):
+        super(LogisticRegression, self).__init__()
+        self.fc1 = nn.Linear(28 * 28, 10)
+
+    def forward(self, x):
+        out = self.fc1(x)
+        return out
 
 class CNNMnist(nn.Module):
     def __init__(self, args):

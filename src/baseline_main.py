@@ -17,9 +17,9 @@ from models import MLP, CNNMnist, CNNFashion_Mnist, CNNCifar
 
 if __name__ == '__main__':
     args = args_parser()
-    if args.gpu:
-        torch.cuda.set_device(args.gpu)
-    device = 'cuda' if args.gpu else 'cpu'
+    if args.gpu_id:
+        torch.cuda.set_device(args.gpu_id)
+    device = 'cuda' if args.gpu_id else 'cpu'
 
     # load datasets
     train_dataset, test_dataset, _ = get_dataset(args)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
                                      weight_decay=1e-4)
 
     trainloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-    criterion = torch.nn.NLLLoss().to(device)
+    criterion = torch.nn.MSELoss().to(device)
     epoch_loss = []
 
     for epoch in tqdm(range(args.epochs)):
@@ -70,7 +70,8 @@ if __name__ == '__main__':
 
             optimizer.zero_grad()
             outputs = global_model(images)
-            loss = criterion(outputs, labels)
+            print(torch.eye(10)[outputs.long()])
+            loss = criterion(torch.eye(10)[outputs.long()], torch.eye(10)[labels.long()])
             loss.backward()
             optimizer.step()
 
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     plt.plot(range(len(epoch_loss)), epoch_loss)
     plt.xlabel('epochs')
     plt.ylabel('Train loss')
-    plt.savefig('../save/nn_{}_{}_{}.png'.format(args.dataset, args.model,
+    plt.savefig('save/nn_{}_{}_{}.png'.format(args.dataset, args.model,
                                                  args.epochs))
 
     # testing

@@ -15,7 +15,7 @@ from tensorboardX import SummaryWriter
 
 from options import args_parser
 from update import LocalUpdate, test_inference
-from models import MLP, CNNMnist, CNNFashion_Mnist, CNNCifar
+from models import MLP, CNNMnist, CNNFashion_Mnist, CNNCifar, LogisticRegression
 from utils import get_dataset, average_weights, exp_details
 
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     if args.gpu_id:
         torch.cuda.set_device(args.gpu_id)
-    device = 'cuda' if args.gpu else 'cpu'
+    device = 'cuda' if args.gpu_id else 'cpu'
 
     # load dataset and user groups
     train_dataset, test_dataset, user_groups = get_dataset(args)
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
         # update global weights
         global_weights = average_weights(local_weights)
-
+        print(local_weights)
         # update global weights
         global_model.load_state_dict(global_weights)
 
